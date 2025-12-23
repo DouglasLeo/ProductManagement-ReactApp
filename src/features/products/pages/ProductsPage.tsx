@@ -7,14 +7,25 @@ import ErrorPage from "../../../shared/pages/ErrorPage.tsx";
 import { API_BASE_URL } from "../../../shared/config/api.ts";
 import SearchInput from "../../../shared/components/SearchInput.tsx";
 
+const PAGE_SIZE = 10;
+
 const ProductsPage = () => {
-  const { data, loading, error } = useFetch<Product[]>(
-    `${API_BASE_URL}/products`
-  );
+  const [page, setPage] = React.useState(1);
   const [search, setSearch] = React.useState("");
+
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const { data, loading, error } = useFetch<Product[]>(
+    `${API_BASE_URL}/products?Skip=${skip}&Take=${PAGE_SIZE + 1}`
+  );
+
+  const hasNextPage = (data?.length ?? 0) > PAGE_SIZE;
+  const hasPreviousPage = page > 1;
 
   const filteredProducts = React.useMemo(() => {
     if (!data) return [];
+
+    if (!search) return data.slice(0, PAGE_SIZE);
 
     return data.filter((product) =>
       product.name.toLowerCase().includes(search.toLowerCase())
@@ -77,6 +88,31 @@ const ProductsPage = () => {
           ))
         )}
       </ul>
+      {(hasPreviousPage || hasNextPage) && (
+        <div className="flex justify-center gap-4 mt-8">
+          {hasPreviousPage && (
+            <button
+              onClick={() => setPage((prev) => prev - 1)}
+              className="px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
+            >
+              ← Anterior
+            </button>
+          )}
+
+          <span className="flex items-center text-slate-600 font-medium">
+            Página {page}
+          </span>
+
+          {hasNextPage && (
+            <button
+              onClick={() => setPage((prev) => prev + 1)}
+              className="px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
+            >
+              Próxima →
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
