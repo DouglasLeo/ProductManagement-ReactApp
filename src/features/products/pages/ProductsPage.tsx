@@ -5,32 +5,20 @@ import { Link } from "react-router-dom";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner.tsx";
 import ErrorPage from "../../../shared/pages/ErrorPage.tsx";
 import { API_BASE_URL } from "../../../shared/config/api.ts";
-import SearchInput from "../../../shared/components/SearchInput.tsx";
 
 const PAGE_SIZE = 10;
 
 const ProductsPage = () => {
   const [page, setPage] = React.useState(1);
-  const [search, setSearch] = React.useState("");
-
   const skip = (page - 1) * PAGE_SIZE;
 
-  const { data, loading, error } = useFetch<Product[]>(
-    `${API_BASE_URL}/products?Skip=${skip}&Take=${PAGE_SIZE + 1}`
-  );
+  const url = `${API_BASE_URL}/products?Skip=${skip}&Take=${PAGE_SIZE + 1}`;
+
+  const { data, loading, error } = useFetch<Product[]>(url);
 
   const hasNextPage = (data?.length ?? 0) > PAGE_SIZE;
+
   const hasPreviousPage = page > 1;
-
-  const filteredProducts = React.useMemo(() => {
-    if (!data) return [];
-
-    if (!search) return data.slice(0, PAGE_SIZE);
-
-    return data.filter((product) =>
-      product.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [data, search]);
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorPage message="Erro ao carregar produtos." />;
@@ -38,14 +26,7 @@ const ProductsPage = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <div className="flex justify-between items-center my-2">
-        <h1 className="text-2xl font-semibold mb-6 text-slate-800">Produtos</h1>
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder="Buscar produto pelo nome..."
-        />
-      </div>
+      <h1 className="text-2xl font-semibold mb-6 text-slate-800">Produtos</h1>
 
       <ul className="space-y-4">
         {data.length === 0 ? (
@@ -68,7 +49,7 @@ const ProductsPage = () => {
             + Criar produto
           </Link>
         ) : (
-          filteredProducts.map((product) => (
+          data.map((product) => (
             <li
               key={product.id}
               className="bg-white border border-slate-200 rounded-lg  shadow-sm hover:shadow-md transition-shadow"
