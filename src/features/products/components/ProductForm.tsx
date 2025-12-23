@@ -69,7 +69,6 @@ const ProductForm = ({
         <MoneyInput
           name="price"
           labelName="Preço"
-          labelClassName="font-semibold"
           value={product.price}
           error={errors?.price}
           onChange={onPriceChange}

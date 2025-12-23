@@ -41,7 +41,6 @@ function useFetch<T>(url: RequestInfo | URL, options?: RequestInit) {
         if (!signal.aborted) setError(httpError);
       } finally {
         if (!signal.aborted) setLoading(false);
-        console.log(error);
       }
     };
     fetchData();

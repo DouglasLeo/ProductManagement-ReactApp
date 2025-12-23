@@ -6,7 +6,6 @@ interface IInput extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const TextInput = ({ labelName, error, ...props }: IInput) => {
-  console.log(error);
   return (
     <div>
       <label htmlFor={labelName} className="font-semibold">
