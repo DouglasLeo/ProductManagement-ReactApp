@@ -42,7 +42,7 @@ const ProductDetails = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
-        <h1 className="text-2xl font-semibold text-slate-800 pb-4">
+        <h1 className="text-2xl font-semibold text-slate-800 pb-4 break-all">
           {data.name}
         </h1>
         <h2>Descrição:</h2>
